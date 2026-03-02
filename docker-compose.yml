@@ -16,6 +16,7 @@ services:
   # Наш второй сервис: Твой скрипт (Манипулятор)
   miner:
     build: .  # Строить из текущей папки (использует твой Dockerfile)
+    command: python -u producer.py
     volumes:
       - .:/app # Монтируем код, чтобы обновлять на лету
     depends_on:
@@ -38,6 +39,28 @@ services:
     environment:
       - PYTHONUNBUFFERED=1
 
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    ports:
+      - "5672:5672"   # Порт для общения роботов (скриптов)
+      - "15672:15672" # Порт для людей (Веб-интерфейс управления)
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    environment:
+      RABBITMQ_DEFAULT_USER: user
+      RABBITMQ_DEFAULT_PASS: password
+
+  worker:
+    build: .
+    command: python -u worker.py
+    volumes:
+      - .:/app
+    depends_on:
+      - rabbitmq
+      - db
+    environment:
+      - PYTHONUNBUFFERED=1
+
 volumes:
   postgres_data: # Объявляем место для хранения данных
-
+  rabbitmq_data:
