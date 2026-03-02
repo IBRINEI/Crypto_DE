@@ -18,7 +18,12 @@ channel.queue_declare(queue='crypto_prices', durable=True)
 
 try:
     while True:
-        req = requests.get('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd')
+        try:
+            req = requests.get('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd')
+        except Exception as ee:
+            print(f'Exception in get: {ee}')
+            time.sleep(60)
+            continue
         if req.status_code == 200:
             cur_time = datetime.datetime.now().isoformat()
             data = req.json()
