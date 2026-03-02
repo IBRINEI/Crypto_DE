@@ -14,7 +14,10 @@ params = pika.ConnectionParameters(host='rabbitmq', port=5672, credentials=crede
 connection = pika.BlockingConnection(params)
 channel = connection.channel()
 
-channel.queue_declare(queue='crypto_prices', durable=True)
+# channel.queue_declare(queue='crypto_prices', durable=True)
+
+exchange_name = 'crypto_events'
+channel.exchange_declare(exchange=exchange_name, exchange_type='fanout')
 
 try:
     while True:
@@ -29,7 +32,7 @@ try:
             data = req.json()
             payload = {'price': data['bitcoin']['usd'], 'timestamp': cur_time}
             msg = json.dumps(payload)
-            channel.basic_publish(exchange='', routing_key='crypto_prices', body=msg, properties=pika.BasicProperties(delivery_mode=2))
+            channel.basic_publish(exchange=exchange_name, routing_key='', body=msg, properties=pika.BasicProperties(delivery_mode=2))
             print('Sent to RabbitMQ!')
         else:
             print('Status code:', req.status_code)

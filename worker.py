@@ -33,7 +33,12 @@ time.sleep(30)
 connection = pika.BlockingConnection(pika.ConnectionParameters(host='rabbitmq', port=5672, credentials=pika.PlainCredentials('user', os.getenv('PIKA_PASSWORD'))))
 channel = connection.channel()
 
+exchange_name = 'crypto_events'
+channel.exchange_declare(exchange=exchange_name, exchange_type='fanout')
+
 channel.queue_declare(queue='crypto_prices', durable=True)
+
+channel.queue_bind(exchange=exchange_name, queue='crypto_prices')
 
 channel.basic_qos(prefetch_count=1)
 

@@ -68,6 +68,21 @@ services:
       - DB_PASSWORD=${DB_PASSWORD}
       - PIKA_PASSWORD=${PIKA_PASSWORD}
 
+  alert:
+    build: .
+    command: python -u alert.py
+    volumes:
+      - .:/app
+    depends_on:
+      - rabbitmq
+      - db
+    environment:
+      - PYTHONUNBUFFERED=1
+      - DB_PASSWORD=${DB_PASSWORD}
+      - PIKA_PASSWORD=${PIKA_PASSWORD}
+      - TG_TOKEN=${TG_TOKEN}
+      - TG_CHAT_ID=${TG_CHAT_ID}
+
 volumes:
   postgres_data: # Объявляем место для хранения данных
   rabbitmq_data:
