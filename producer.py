@@ -1,3 +1,5 @@
+import os
+
 import pika
 import requests
 import datetime
@@ -7,7 +9,7 @@ import json
 
 time.sleep(20)
 
-credentials = pika.PlainCredentials('user', 'password')
+credentials = pika.PlainCredentials('user', os.getenv('PIKA_PASSWORD'))
 params = pika.ConnectionParameters(host='rabbitmq', port=5672, credentials=credentials)
 connection = pika.BlockingConnection(params)
 channel = connection.channel()

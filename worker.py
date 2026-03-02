@@ -1,3 +1,5 @@
+import os
+
 import pika
 import time
 import json
@@ -28,7 +30,7 @@ def callback(ch, method, properties, body):
     ch.basic_ack(delivery_tag=method.delivery_tag)
 
 time.sleep(30)
-connection = pika.BlockingConnection(pika.ConnectionParameters(host='rabbitmq', port=5672, credentials=pika.PlainCredentials('user', 'password')))
+connection = pika.BlockingConnection(pika.ConnectionParameters(host='rabbitmq', port=5672, credentials=pika.PlainCredentials('user', os.getenv('PIKA_PASSWORD'))))
 channel = connection.channel()
 
 channel.queue_declare(queue='crypto_prices', durable=True)

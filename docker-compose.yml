@@ -6,7 +6,7 @@ services:
     image: postgres:15-alpine
     environment:
       POSTGRES_USER: admin
-      POSTGRES_PASSWORD: secretpassword
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
       POSTGRES_DB: crypto_db
     ports:
       - "5432:5432"  # Открываем порт наружу, чтобы ты мог подключиться через DBeaver
@@ -23,6 +23,8 @@ services:
       - db # Запускать только ПОСЛЕ того, как встанет база
     environment:
       - PYTHONUNBUFFERED=1
+      - DB_PASSWORD=${DB_PASSWORD}
+      - PIKA_PASSWORD=${PIKA_PASSWORD}
 
   dashboard:
     build: .
@@ -38,6 +40,8 @@ services:
       - db
     environment:
       - PYTHONUNBUFFERED=1
+      - DB_PASSWORD=${DB_PASSWORD}
+      - PIKA_PASSWORD=${PIKA_PASSWORD}
 
   rabbitmq:
     image: rabbitmq:3-management-alpine
@@ -48,7 +52,8 @@ services:
       - rabbitmq_data:/var/lib/rabbitmq
     environment:
       RABBITMQ_DEFAULT_USER: user
-      RABBITMQ_DEFAULT_PASS: password
+      RABBITMQ_DEFAULT_PASS: ${PIKA_PASSWORD}
+
 
   worker:
     build: .
@@ -60,6 +65,8 @@ services:
       - db
     environment:
       - PYTHONUNBUFFERED=1
+      - DB_PASSWORD=${DB_PASSWORD}
+      - PIKA_PASSWORD=${PIKA_PASSWORD}
 
 volumes:
   postgres_data: # Объявляем место для хранения данных

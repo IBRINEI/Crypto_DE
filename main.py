@@ -1,3 +1,5 @@
+import os
+
 import requests
 import datetime
 import psycopg2
@@ -7,7 +9,7 @@ DB_CONFIG = {
     'host': 'db',
     'database': 'crypto_db',
     'user': 'admin',
-    'password': 'secretpassword'
+    'password': os.getenv('DB_PASSWORD'),
 }
 
 def get_db_connection():
