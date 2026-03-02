@@ -21,7 +21,7 @@ while True:
     with placeholder.container():
         try:
             data = load_data()
-            last_price = data.iloc[-1]['price']
+            last_price = data.iloc[0]['price']
             st.metric(label="Bitcoin Price (USD)", value=f"${last_price}")
 
             base = alt.Chart(data).encode(
@@ -39,7 +39,7 @@ while True:
 
             st.altair_chart(final_chart, use_container_width=True)
 
-            st.dataframe(data.tail(5))
+            st.dataframe(data.head(5))
 
         except Exception as e:
             st.error(e)
