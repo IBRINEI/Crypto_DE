@@ -3,8 +3,16 @@ import time
 import json
 import psycopg2
 
-from main import get_db_connection, insert_data_to_table
+from main import get_db_connection
 
+def insert_data_to_table(connection, data: dict):
+    with connection.cursor() as cursor:
+        price = data['price']
+        timestamp = data['timestamp']
+        print(f"Bitcoin is {price}$ at {timestamp} UTC+0 time")
+
+        cursor.execute('INSERT INTO bitcoin_rates (price, created_at) VALUES (%s, %s)', (price, timestamp))
+    connection.commit()
 
 def callback(ch, method, properties, body):
     print(" [x] Received %r" % body)

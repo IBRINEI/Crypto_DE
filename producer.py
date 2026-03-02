@@ -18,7 +18,10 @@ try:
     while True:
         req = requests.get('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd')
         if req.status_code == 200:
-            msg = json.dumps(req.json())
+            cur_time = datetime.datetime.now().isoformat()
+            data = req.json()
+            payload = {'price': data['bitcoin']['usd'], 'timestamp': cur_time}
+            msg = json.dumps(payload)
             channel.basic_publish(exchange='', routing_key='crypto_prices', body=msg, properties=pika.BasicProperties(delivery_mode=2))
             print('Sent to RabbitMQ!')
         else:
