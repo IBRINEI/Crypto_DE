@@ -1,0 +1,43 @@
+
+
+services:
+  # Наш первый сервис: Склад (База данных)
+  db:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: secretpassword
+      POSTGRES_DB: crypto_db
+    ports:
+      - "5432:5432"  # Открываем порт наружу, чтобы ты мог подключиться через DBeaver
+    volumes:
+      - postgres_data:/var/lib/postgresql/data # Чтобы данные не исчезали при перезапуске
+
+  # Наш второй сервис: Твой скрипт (Манипулятор)
+  miner:
+    build: .  # Строить из текущей папки (использует твой Dockerfile)
+    volumes:
+      - .:/app # Монтируем код, чтобы обновлять на лету
+    depends_on:
+      - db # Запускать только ПОСЛЕ того, как встанет база
+    environment:
+      - PYTHONUNBUFFERED=1
+
+  dashboard:
+    build: .
+    # ВАЖНО: Мы переопределяем команду запуска.
+    # По умолчанию Dockerfile запускает main.py, но тут нам нужен dashboard.py
+    # И запускается он через команду "streamlit run"
+    command: streamlit run dashboard.py --server.port 8501
+    volumes:
+      - .:/app
+    ports:
+      - "8501:8501" # Пробрасываем порт наружу, чтобы ты открыл в браузере
+    depends_on:
+      - db
+    environment:
+      - PYTHONUNBUFFERED=1
+
+volumes:
+  postgres_data: # Объявляем место для хранения данных
+
