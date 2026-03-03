@@ -21,7 +21,7 @@ def fetch_data_from_api():
             df['created_at'] = pd.to_datetime(df['created_at'])
         return df
     except Exception as e:
-        st.error('Error in fetch_data_from_api, ', e)
+        st.error(f'Error in fetch_data_from_api, {e}')
         return pd.DataFrame()
 
 

@@ -96,6 +96,11 @@ services:
       - PIKA_PASSWORD=${PIKA_PASSWORD}
     ports:
       - "8080:8000"
+  redis:
+    image: redis:alpine
+    ports:
+      - "6379:6379"
+
 volumes:
   postgres_data: # Объявляем место для хранения данных
   rabbitmq_data:
