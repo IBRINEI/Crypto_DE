@@ -3,3 +3,5 @@ psycopg2-binary
 streamlit
 pandas
 pika
+fastapi
+uvicorn

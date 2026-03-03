@@ -83,6 +83,19 @@ services:
       - TG_TOKEN=${TG_TOKEN}
       - TG_CHAT_ID=${TG_CHAT_ID}
 
+  api:
+    build: .
+    command: uvicorn api:app --host 0.0.0.0 --port 8000
+    volumes:
+      - .:/app
+    depends_on:
+      - db
+    environment:
+      - PYTHONUNBUFFERED=1
+      - DB_PASSWORD=${DB_PASSWORD}
+      - PIKA_PASSWORD=${PIKA_PASSWORD}
+    ports:
+      - "8080:8000"
 volumes:
   postgres_data: # Объявляем место для хранения данных
   rabbitmq_data:

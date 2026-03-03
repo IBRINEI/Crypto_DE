@@ -2,27 +2,27 @@ import streamlit as st
 import pandas as pd
 import time
 import altair as alt
-from main import get_db_connection
+import requests
 
 
 st.set_page_config(page_title="Crypt", layout="wide")
 st.title("🏭 Мониторинг биткоина")
 
 
-def load_data():
-    conn = get_db_connection()
-    query = '''SELECT 
-    created_at,
-    price,
-    AVG(price) OVER (
-        ORDER BY created_at 
-        ROWS BETWEEN 9 PRECEDING AND CURRENT ROW
-    ) as sma_10
-FROM bitcoin_rates
-ORDER BY created_at DESC'''
-    data = pd.read_sql_query(query, conn)
-    conn.close()
-    return data
+def fetch_data_from_api():
+    url = "http://api:8000/api/v1/prices/all"
+
+    try:
+        response = requests.get(url)
+        response.raise_for_status()
+        data = response.json()
+        df = pd.DataFrame(data['message'], columns=['created_at', 'price', 'sma_10'])
+        if not df.empty and 'created_at' in df.columns:
+            df['created_at'] = pd.to_datetime(df['created_at'])
+        return df
+    except Exception as e:
+        st.error('Error in fetch_data_from_api, ', e)
+        return pd.DataFrame()
 
 
 placeholder = st.empty()
@@ -30,7 +30,7 @@ placeholder = st.empty()
 while True:
     with placeholder.container():
         try:
-            data = load_data()
+            data = fetch_data_from_api()
             last_price = data.iloc[0]['price']
             st.metric(label="Bitcoin Price (USD)", value=f"${last_price}")
 
@@ -58,5 +58,6 @@ while True:
             st.dataframe(data.head(5))
 
         except Exception as e:
+            print(e)
             st.error(e)
     time.sleep(60)
