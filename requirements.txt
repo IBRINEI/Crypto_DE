@@ -6,3 +6,5 @@ pika
 fastapi
 uvicorn
 redis
+pytest
+httpx
