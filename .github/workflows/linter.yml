@@ -10,6 +10,11 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
 
+    - name: Create test .env file
+      run: |
+        echo "DB_PASSWORD=fake_password" >> .env
+        echo "PIKA_PASSWORD=password" >> .env
+
     - name: Start Factory
       run: docker compose up -d --build
 
