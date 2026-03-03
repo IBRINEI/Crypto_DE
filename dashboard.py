@@ -8,6 +8,7 @@ from main import get_db_connection
 st.set_page_config(page_title="Crypt", layout="wide")
 st.title("🏭 Мониторинг биткоина")
 
+
 def load_data():
     conn = get_db_connection()
     query = 'SELECT * FROM bitcoin_rates ORDER BY created_at DESC'
