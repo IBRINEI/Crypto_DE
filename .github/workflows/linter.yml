@@ -17,7 +17,7 @@ jobs:
       run: sleep 80
 
     - name: Run Pytest
-      run: docker-compose exec -T api pytest
+      run: docker compose exec -T api pytest
 
     - name: Run Linter (Flake8)
       run: |
