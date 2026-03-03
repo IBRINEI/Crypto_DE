@@ -3,7 +3,6 @@ import os
 import pika
 import requests
 import datetime
-import psycopg2
 import time
 import json
 

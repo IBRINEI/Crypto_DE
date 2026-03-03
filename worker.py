@@ -3,7 +3,6 @@ import os
 import pika
 import time
 import json
-import psycopg2
 
 from main import get_db_connection
 

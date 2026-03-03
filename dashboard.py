@@ -1,9 +1,8 @@
 import streamlit as st
-import psycopg2
 import pandas as pd
 import time
 import altair as alt
-from main import DB_CONFIG, get_db_connection
+from main import get_db_connection
 
 st.set_page_config(page_title="Crypt", layout="wide")
 st.title("🏭 Мониторинг биткоина")
