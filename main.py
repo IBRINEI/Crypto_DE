@@ -12,6 +12,7 @@ DB_CONFIG = {
     'password': os.getenv('DB_PASSWORD'),
 }
 
+
 def get_db_connection():
     try:
         connection = psycopg2.connect(**DB_CONFIG)
@@ -20,14 +21,18 @@ def get_db_connection():
         return None
     return connection
 
+
 def create_table(connection):
     with connection.cursor() as cursor:
         try:
-            cursor.execute('CREATE TABLE IF NOT EXISTS bitcoin_rates (id SERIAL PRIMARY KEY, price NUMERIC, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)')
+            cursor.execute(
+                'CREATE TABLE IF NOT EXISTS bitcoin_rates '
+                '(id SERIAL PRIMARY KEY, price NUMERIC, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)')
             print('Table is ready!')
         except psycopg2.Error as e:
             print('Error while creating table', e)
     connection.commit()
+
 
 def insert_data_to_table(connection, data: dict):
     with connection.cursor() as cursor:
@@ -63,6 +68,7 @@ def main():
         else:
             print(f'API request failed. Status code: {req.status_code}')
         time.sleep(60)
+
 
 if __name__ == '__main__':
     main()

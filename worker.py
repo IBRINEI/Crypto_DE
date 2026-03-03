@@ -6,6 +6,7 @@ import json
 
 from main import get_db_connection
 
+
 def insert_data_to_table(connection, data: dict):
     with connection.cursor() as cursor:
         price = data['price']
@@ -14,6 +15,7 @@ def insert_data_to_table(connection, data: dict):
 
         cursor.execute('INSERT INTO bitcoin_rates (price, created_at) VALUES (%s, %s)', (price, timestamp))
     connection.commit()
+
 
 def callback(ch, method, properties, body):
     print(" [x] Received %r" % body)
@@ -28,8 +30,11 @@ def callback(ch, method, properties, body):
     print(" [x] Done")
     ch.basic_ack(delivery_tag=method.delivery_tag)
 
+
 time.sleep(30)
-connection = pika.BlockingConnection(pika.ConnectionParameters(host='rabbitmq', port=5672, credentials=pika.PlainCredentials('user', os.getenv('PIKA_PASSWORD'))))
+connection = pika.BlockingConnection(
+    pika.ConnectionParameters(host='rabbitmq', port=5672,
+                              credentials=pika.PlainCredentials('user', os.getenv('PIKA_PASSWORD'))))
 channel = connection.channel()
 
 exchange_name = 'crypto_events'

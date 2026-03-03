@@ -4,6 +4,7 @@ import time
 import altair as alt
 from main import get_db_connection
 
+
 st.set_page_config(page_title="Crypt", layout="wide")
 st.title("🏭 Мониторинг биткоина")
 
@@ -13,6 +14,7 @@ def load_data():
     data = pd.read_sql_query(query, conn)
     conn.close()
     return data
+
 
 placeholder = st.empty()
 
