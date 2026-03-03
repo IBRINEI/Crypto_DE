@@ -4,7 +4,7 @@ import pika
 import time
 import json
 
-from main import get_db_connection
+from main import get_db_connection, create_table
 
 
 def insert_data_to_table(connection, data: dict):
@@ -32,6 +32,11 @@ def callback(ch, method, properties, body):
 
 
 time.sleep(30)
+
+conn = get_db_connection()
+create_table(conn)
+conn.close()
+
 connection = pika.BlockingConnection(
     pika.ConnectionParameters(host='rabbitmq', port=5672,
                               credentials=pika.PlainCredentials('user', os.getenv('PIKA_PASSWORD'))))
